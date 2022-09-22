@@ -5,7 +5,7 @@ import categoryReducer from '../features/categories/categorySlice';
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    category: categoryReducer,
+    categories: categoryReducer,
   },
 });
 
