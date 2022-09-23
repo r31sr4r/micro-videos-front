@@ -1,7 +1,7 @@
 import { Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../../app/hooks';
-import { selectCategories } from './categorySlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { deleteCategory, selectCategories } from './categorySlice';
 import {
 	DataGrid,
 	GridRowsProp,
@@ -9,11 +9,24 @@ import {
 	GridToolbar,
 } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useSnackbar } from 'notistack'
+
 
 export const CategoryList = () => {
 	const categories = useAppSelector(selectCategories);
+	const dispatch = useAppDispatch();
+	const { enqueueSnackbar } = useSnackbar()
 
-	const rows: GridRowsProp = categories.map((category) => ({
+	const componentProps = {
+		toolbar: {
+			showQuickFilter: true,
+			quickFilterProps: {
+				debounceMs: 500,
+			},
+		},
+	};
+
+	const rows: GridRowsProp = categories.map((category: any) => ({
 		id: category.id,
 		name: category.name,
 		description: category.description,
@@ -26,6 +39,7 @@ export const CategoryList = () => {
 			field: 'name',
 			headerName: 'Name',
 			flex: 1,
+			renderCell: renderNameCell,
 		},
 		{
 			field: 'is_active',
@@ -40,18 +54,35 @@ export const CategoryList = () => {
 			flex: 1,
 		},
 		{
-			field: 'actions',
+			field: 'id',
 			headerName: 'Actions',
+			type: 'string',
 			flex: 1,
 			renderCell: renderActionsCell,
 		},
 	];
 
+	function renderNameCell(rowData: any) {
+		return (
+			<Link
+				style={{ textDecoration: 'none' }}
+				to={`/categories/edit/${rowData.id}`}
+			>
+				<Typography color="primary">{rowData.value}</Typography>
+			</Link>
+		);
+	}
+
+	function handleDeleteCategory(id: string) {
+		dispatch(deleteCategory(id));
+		enqueueSnackbar('Category deleted successfully', { variant: 'success' })
+	}
+
 	function renderActionsCell(params: any) {
 		return (
 			<IconButton
 				color="secondary"
-				onClick={() => console.log('delete', params.row.id)}
+				onClick={() => handleDeleteCategory(params.value)}
 				arial-label="delete"
 			>
 				<DeleteIcon />
@@ -80,26 +111,19 @@ export const CategoryList = () => {
 					Create Category
 				</Button>
 			</Box>
-			<div style={{ height: 300, width: '100%' }}>
+			<Box sx={{ display: 'flex', height: 600 }}>
 				<DataGrid
-					components={{ Toolbar: GridToolbar }}
-					rowsPerPageOptions={[2, 10, 25, 50, 100]}
-					disableColumnSelector={true}
-					disableColumnFilter={true}
-					disableDensitySelector={true}	
-					disableSelectionOnClick={true}				
-					rows={rows}
 					columns={columns}
-					componentsProps={{
-						toolbar: {
-							showQuickFilter: true,
-							quickFilterProps: {
-								debounceMs: 500,
-							},
-						},
-					}}
+					components={{ Toolbar: GridToolbar }}
+					componentsProps={componentProps}
+					disableColumnFilter={true}
+					disableColumnSelector={true}
+					disableDensitySelector={true}
+					disableSelectionOnClick={true}
+					rows={rows}
+					rowsPerPageOptions={[2, 10, 25, 50, 100]}
 				/>
-			</div>
+			</Box>
 		</Box>
 	);
 };
