@@ -1,7 +1,12 @@
 import { Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { deleteCategory, selectCategories } from './categorySlice';
+import {
+	deleteCategory,
+	selectCategories,
+	useDeleteCategoryMutation,
+	useGetCategoriesQuery,
+} from './categorySlice';
 import {
 	DataGrid,
 	GridRowsProp,
@@ -9,13 +14,16 @@ import {
 	GridToolbar,
 } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useSnackbar } from 'notistack'
-
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 
 export const CategoryList = () => {
-	const categories = useAppSelector(selectCategories);
+	const { data, isFetching, error } = useGetCategoriesQuery();
+	const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation();
+
+	console.log(data?.items);
 	const dispatch = useAppDispatch();
-	const { enqueueSnackbar } = useSnackbar()
+	const { enqueueSnackbar } = useSnackbar();
 
 	const componentProps = {
 		toolbar: {
@@ -26,13 +34,17 @@ export const CategoryList = () => {
 		},
 	};
 
-	const rows: GridRowsProp = categories.map((category: any) => ({
-		id: category.id,
-		name: category.name,
-		description: category.description,
-		is_active: category.is_active,
-		created_at: new Date(category.created_at).toLocaleDateString('pt-BR'),
-	}));
+	const rows: GridRowsProp = data
+		? data.items.map((category: any) => ({
+				id: category.id,
+				name: category.name,
+				description: category.description,
+				is_active: category.is_active,
+				created_at: new Date(category.created_at).toLocaleDateString(
+					'pt-BR'
+				),
+		  }))
+		: [];
 
 	const columns: GridColDef[] = [
 		{
@@ -73,10 +85,22 @@ export const CategoryList = () => {
 		);
 	}
 
-	function handleDeleteCategory(id: string) {
-		dispatch(deleteCategory(id));
-		enqueueSnackbar('Category deleted successfully', { variant: 'success' })
+	async function handleDeleteCategory(id: string) {
+		await deleteCategory({ id });
 	}
+
+	useEffect(() => {
+		if (deleteCategoryStatus.isSuccess) {
+			enqueueSnackbar('Category deleted successfully', {
+				variant: 'success',
+			});
+		}
+		if (deleteCategoryStatus.error) {
+			enqueueSnackbar('Error deleting category', {
+				variant: 'error',
+			});
+		}
+	}, [deleteCategoryStatus, enqueueSnackbar]);
 
 	function renderActionsCell(params: any) {
 		return (
