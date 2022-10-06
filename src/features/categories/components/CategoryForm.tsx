@@ -47,8 +47,7 @@ export function CategoryForm({
 					</Grid>
 					<Grid item xs={12}>
 						<FormControl fullWidth>
-							<TextField
-								required
+							<TextField								
 								name="description"
 								label="Description"
 								value={category.description}

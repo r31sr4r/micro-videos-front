@@ -1,51 +1,122 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { Result, Results } from '../../types/Category';
+import { CategoryParams, Result, Results } from '../../types/Category';
 import { apiSlice } from '../api/apiSlice';
+import { SortDirection } from '../../types/SortDirection';
 
 export interface Category {
 	id: string;
 	name: string;
 	description: string | null;
 	is_active: boolean;
-	deleted_at: string | null;
-	created_at: string;
-	updated_at: string;
+	created_at: string | null;
 }
 
 const endpointUrl = '/categories';
 
-const deleteCategoryMutation = (category: Category) => {
+function parseQueryParams(params: CategoryParams) {
+	const queryParams = new URLSearchParams();
+	if (params.page) {
+		queryParams.append('page', params.page.toString());
+	}
+
+	if (params.per_page) {
+		queryParams.append('per_page', params.per_page.toString());
+	}
+
+	if (params.filter) {
+		queryParams.append('filter', params.filter);
+	}
+
+	if (params.sort) {
+		queryParams.append('sort', params.sort);
+	}
+
+	if (params.sort_dir) {
+		queryParams.append('sort_dir', params.sort_dir);
+	}
+
+	return queryParams.toString();
+}
+
+function getCategories({
+	page = 1,
+	per_page = 10,
+	sort = 'name',
+	sort_dir = 'asc' as SortDirection,
+	filter = '',
+}) {
+	const params = { page, per_page, sort, sort_dir, filter };
+
+	return `${endpointUrl}?${parseQueryParams(params)}`;
+}
+
+function deleteCategoryMutation(category: Category) {
 	return {
 		url: `${endpointUrl}/${category.id}`,
 		method: 'DELETE',
 	};
-};
+}
 
-export const categoryApiSlice = apiSlice.injectEndpoints({
+function createCategoryMutation(category: Category) {
+	return {
+		url: endpointUrl,
+		method: 'POST',
+		body: category,
+	};
+}
+
+function updateCategoryMutation(category: Category) {
+	return {
+		url: `${endpointUrl}/${category.id}`,
+		method: 'PUT',
+		body: category,
+	};
+}
+
+function getCategoryById({ id }: { id: string }): string {
+	return `${endpointUrl}/${id}`;
+}
+
+export const categoryApiSlice: any = apiSlice.injectEndpoints({
 	endpoints: ({ query, mutation }) => ({
-		getCategories: query<Results, void>({
-			query: () => `${endpointUrl}`,
+		getCategories: query<Results, CategoryParams>({
+			query: getCategories,
+			providesTags: ['Categories'],
+		}),
+		getCategory: query<Result, { id: string }>({
+			query: getCategoryById,
 			providesTags: ['Categories'],
 		}),
 		deleteCategory: mutation<Result, { id: string }>({
 			query: deleteCategoryMutation,
 			invalidatesTags: ['Categories'],
 		}),
+		createCategory: mutation<Result, Category>({
+			query: createCategoryMutation,
+			invalidatesTags: ['Categories'],
+		}),
+		updateCategory: mutation<Result, Category>({
+			query: updateCategoryMutation,
+			invalidatesTags: ['Categories'],
+		}),		
 	}),
 });
 
-export const { useGetCategoriesQuery, useDeleteCategoryMutation } =
-	categoryApiSlice;
+export const {
+	useGetCategoriesQuery,
+	useGetCategoryQuery,
+	useDeleteCategoryMutation,
+	useCreateCategoryMutation,
+	useUpdateCategoryMutation,
+} = categoryApiSlice;
 
 const category: Category = {
 	id: '1',
 	name: 'Category 1',
 	description: 'Category 1 description',
 	is_active: true,
-	deleted_at: null,
 	created_at: '2021-01-01 00:00:00',
-	updated_at: '2021-01-01 00:00:00',
 };
 
 export const initialState = [
@@ -55,7 +126,6 @@ export const initialState = [
 		id: '2',
 		name: 'Category 2',
 		created_at: '2021-05-12 00:00:00',
-		updated_at: '2021-01-02 00:00:00',
 	},
 	{ ...category, id: '3', name: 'Category 3', is_active: false },
 ];
@@ -96,9 +166,7 @@ export const selectCatoryById = (state: RootState, id: string) => {
 			name: '',
 			description: '',
 			is_active: false,
-			deleted_at: null,
 			created_at: '',
-			updated_at: '',
 		}
 	);
 };

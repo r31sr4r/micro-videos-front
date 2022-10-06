@@ -1,23 +1,29 @@
 import { Box, Paper, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { Category, selectCatoryById, updateCategory } from './categorySlice';
+import { Category, useGetCategoryQuery, useUpdateCategoryMutation } from './categorySlice';
 import { CategoryForm } from './components/CategoryForm';
 import { useSnackbar } from 'notistack'
 
 export const CategoryEdit = () => {
 	const id = useParams<{ id: string }>().id || '';
-	const [isdisabled, setIsDisabled] = React.useState(false);
-	const category = useAppSelector((state) => selectCatoryById(state, id));
-	const [categoryState, setCategoryState] = React.useState<Category>(category);
-	const dispatch = useAppDispatch();
+	const { data: category, isFetching } = useGetCategoryQuery({ id });
+	const [updateCategory, status] = useUpdateCategoryMutation();
+
+	const [categoryState, setCategoryState] = React.useState<Category>({
+		id: '',
+		name: '',
+		description: '',
+		is_active: true,
+		created_at: null,		
+	});
+
 	const { enqueueSnackbar } = useSnackbar()
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();	
-		dispatch(updateCategory(categoryState));
-		enqueueSnackbar('Category updated successfully', { variant: 'success' })
+		await updateCategory(categoryState);
 	}
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +36,21 @@ export const CategoryEdit = () => {
 		setCategoryState({ ...categoryState, [name]: checked });
 	};
 
+	useEffect(() => {
+		if (category) {
+			setCategoryState(category);
+		}
+	}, [category])
+
+	useEffect(() => {
+		if (status.isSuccess) {
+			enqueueSnackbar('Category updated successfully', { variant: 'success' })
+		}
+		if (status.error) {
+			enqueueSnackbar('Error updating category', { variant: 'error' })
+		}
+	}, [enqueueSnackbar, status.error, status.isSuccess])
+
 	return (
 		<Box>
 			<Paper>
@@ -41,7 +62,7 @@ export const CategoryEdit = () => {
 
 				<CategoryForm
 					category={categoryState}
-					isdisabled={isdisabled}
+					isdisabled={status.isLoading}
 					isLoading={false}
 					handleSubmit={handleSubmit}
 					handleChange={handleChange}
