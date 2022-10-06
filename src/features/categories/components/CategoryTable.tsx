@@ -118,7 +118,7 @@ export function CategoriesTable({
 	const rowCounter = data?.total || 0;
 
 	return (
-		<Box sx={{ display: 'flex', height: 600 }}>
+		<Box sx={{ display: 'flex', height: 400 }}>
 			<DataGrid
 				checkboxSelection={false}
 				columns={columns}
