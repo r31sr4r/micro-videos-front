@@ -42,7 +42,7 @@ export function CategoriesTable({
 	};
 
 	const mapDataToGridRows = (data: Results) => {
-		const { items: categories } = data;
+		const { data: categories } = data;
 		return categories.map((category) => ({
 			id: category.id,
 			name: category.name,
@@ -115,7 +115,7 @@ export function CategoriesTable({
 		);
 	}
 
-	const rowCounter = data?.total || 0;
+	const rowCounter = data?.paginationPresenter.total || 0;
 
 	return (
 		<Box sx={{ display: 'flex', height: 400 }}>

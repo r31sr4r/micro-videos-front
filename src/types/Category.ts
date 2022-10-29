@@ -1,23 +1,16 @@
 import { SortDirection } from "./SortDirection";
 
-
 export interface Results {
-    items:       Item[];
-    total:       number;
-    currentPage: number;
-    lastPage:    number;
-    perPage:     number;
+    paginationPresenter: Meta;
+    data: Category[];    
 }
 
 export interface Result {
-    items:       Item;
-    total:       number;
-    currentPage: number;
-    lastPage:    number;
-    perPage:     number;
+    paginationPresenter: Meta;
+    data: Category;
 }
 
-export interface Item {
+export interface Category {
     id:          string;
     name:        string;
     description: null;
@@ -25,11 +18,20 @@ export interface Item {
     created_at:   Date;
 }
 
-export interface CategoryParams {
+export interface Meta {
 	page?: number;
 	per_page?: number;
 	sort?: string;
 	sort_dir?: SortDirection;
 	filter?: string;
+    total?: number;
+}
+
+export interface CategoryParams {
+    page?: number;
+    per_page?: number;
+    sort?: string;
+    sort_dir?: SortDirection;
+    filter?: string;
 }
 
