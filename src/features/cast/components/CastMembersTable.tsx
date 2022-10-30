@@ -1,5 +1,5 @@
 import { Box, IconButton, Typography } from '@mui/material';
-import { Results } from '../../../types/Category';
+import { Results } from '../../../types/CastMembers';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from 'react-router-dom';
 import {
@@ -7,7 +7,7 @@ import {
 	GridColDef,
 	GridRowsProp,
 	GridToolbar,
-	GridFilterModel
+	GridFilterModel,
 } from '@mui/x-data-grid';
 
 type Props = {
@@ -22,7 +22,7 @@ type Props = {
 	handleDelete: (id: string) => void;
 };
 
-export function CategoriesTable({
+export function CastMembersTable({
 	data,
 	perPage,
 	isFetching,
@@ -42,15 +42,11 @@ export function CategoriesTable({
 	};
 
 	const mapDataToGridRows = (data: Results) => {
-		const { data: categories } = data;
-		return categories.map((category) => ({
-			id: category.id,
-			name: category.name,
-			description: category.description,
-			is_active: category.is_active,
-			created_at: new Date(category.created_at).toLocaleDateString(
-				'pt-BR'
-			),
+		const { data: castMembers } = data;
+		return castMembers.map((castMember) => ({
+			id: castMember.id,
+			name: castMember.name,
+			type: castMember.type,
 		}));
 	};
 
@@ -64,16 +60,10 @@ export function CategoriesTable({
 			renderCell: renderNameCell,
 		},
 		{
-			field: 'is_active',
-			headerName: 'Active',
-			type: 'boolean',
+			field: 'type',
+			headerName: 'Type',
 			flex: 1,
-			renderCell: renderIsActiveCell,
-		},
-		{
-			field: 'created_at',
-			headerName: 'Created At',
-			flex: 1,
+			renderCell: renderTypeCell,
 		},
 		{
 			field: 'id',
@@ -88,17 +78,17 @@ export function CategoriesTable({
 		return (
 			<Link
 				style={{ textDecoration: 'none' }}
-				to={`/categories/edit/${rowData.id}`}
+				to={`/cast-members/edit/${rowData.id}`}
 			>
 				<Typography color="primary">{rowData.value}</Typography>
 			</Link>
 		);
 	}
 
-	function renderIsActiveCell(rowData: any) {
+	function renderTypeCell(rowData: any) {
 		return (
-			<Typography color={rowData.value ? 'primary' : 'secondary'}>
-				{rowData.value ? 'Active' : 'Inactive'}
+			<Typography color="primary">
+				{rowData.value === 1 ? 'Director' : 'Actor'}
 			</Typography>
 		);
 	}
@@ -130,14 +120,14 @@ export function CategoriesTable({
 				disableSelectionOnClick={true}
 				filterMode={'server'}
 				loading={isFetching}
+				onFilterModelChange={handleFilterChange}
+				onPageChange={handleOnPageChange}
+				onPageSizeChange={handleOnPageSizeChange}
 				pageSize={perPage}
 				paginationMode={'server'}
 				rowCount={rowCounter}
 				rows={rows}
 				rowsPerPageOptions={rowsPerPage}
-				onFilterModelChange={handleFilterChange}
-				onPageChange={handleOnPageChange}
-				onPageSizeChange={handleOnPageSizeChange}
 			/>
 		</Box>
 	);

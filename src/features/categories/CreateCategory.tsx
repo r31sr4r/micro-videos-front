@@ -61,7 +61,7 @@ export const CategoryCreate = () => {
 				</Box>
 			<CategoryForm
 				category={categoryState}
-				isdisabled={isdisabled}
+				isdisabled={status.isLoading || isdisabled}
 				isLoading={false}
 				handleSubmit={handleSubmit}
 				handleChange={handleChange}

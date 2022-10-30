@@ -10,17 +10,15 @@ import {
 import { CategoriesTable } from './components/CategoryTable';
 
 export const CategoryList = () => {
-	const [page, setPage] = useState(1);
-	const [rowsPerPage, setRowsPerPage] = useState([2, 5, 10, 25]);
-	const [per_page, setPerPage] = useState(2);
-	const [filter, setFilter] = useState('');
-
-	const options = { per_page, filter, page };
-
+	const { enqueueSnackbar } = useSnackbar();
+	const [options, setOptions] = useState({
+		page: 1,
+		filter: '',
+		per_page: 10,
+		rowsPerPage: [10, 25, 30],
+	});
 	const { data, isFetching, error } = useGetCategoriesQuery(options);
 	const [deleteCategory, deleteCategoryStatus] = useDeleteCategoryMutation();
-	
-	const { enqueueSnackbar } = useSnackbar();
 
 	useEffect(() => {
 		if (deleteCategoryStatus.isSuccess) {
@@ -44,20 +42,20 @@ export const CategoryList = () => {
 	}
 
 	function handleOnPageChange(page: number) {
-		setPage(page + 1);
+		setOptions((prev) => ({ ...prev, page: page + 1 }));
 	}
 
 	function handleFilterChange(filterModel: GridFilterModel) {
 		if (filterModel.quickFilterValues?.length) {
 			const search = filterModel.quickFilterValues.join('');
-			setFilter(search);
+			setOptions((prev) => ({ ...prev, filter: search }));
 		} else {
-			setFilter('');
+			setOptions((prev) => ({ ...prev, filter: '' }));
 		}
 	}
 
 	function handleOnPageSizeChange(perPage: number) {
-		setPerPage(perPage);
+		setOptions((prev) => ({ ...prev, per_page: perPage }));
 	}
 
 	return (
@@ -76,8 +74,8 @@ export const CategoryList = () => {
 			<CategoriesTable
 				data={data}
 				isFetching={isFetching}
-				perPage={per_page}
-				rowsPerPage={rowsPerPage}
+				perPage={options.per_page}
+				rowsPerPage={options.rowsPerPage}
 				handleDelete={handleDelete}
 				handleOnPageChange={handleOnPageChange}
 				handleFilterChange={handleFilterChange}

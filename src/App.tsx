@@ -9,12 +9,15 @@ import { CategoryCreate } from './features/categories/CreateCategory';
 import { CategoryEdit } from './features/categories/EditCategory';
 import { Typography } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
+import { ListCastMembers } from './features/cast/ListCastMembers';
+import { CreateCastMember } from './features/cast/CreateCastMember';
+import { EditCastMember } from './features/cast/EditCastMember';
 
 function App() {
 	return (
 		<ThemeProvider theme={appTheme}>
 			<SnackbarProvider
-			  	autoHideDuration={3000}
+				autoHideDuration={3000}
 				maxSnack={3}
 				anchorOrigin={{
 					vertical: 'top',
@@ -30,7 +33,7 @@ function App() {
 				>
 					<Header />
 					<Layout>
-						<h1>Welcome to React Router!</h1>
+						{/* <h1>Welcome to React Router!</h1> */}
 						<Routes>
 							<Route path="/" element={<CategoryList />} />
 							<Route
@@ -44,6 +47,22 @@ function App() {
 							<Route
 								path="/categories/edit/:id"
 								element={<CategoryEdit />}
+							/>
+
+
+							<Route
+								path="/cast-members"
+								element={<ListCastMembers />}
+							/>
+
+							<Route
+								path="/cast-members/create"
+								element={<CreateCastMember />}
+							/>
+
+							<Route
+								path='/cast-members/edit/:id'
+								element={<EditCastMember />}
 							/>
 
 							<Route

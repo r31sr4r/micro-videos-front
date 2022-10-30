@@ -1,21 +1,30 @@
 import { SortDirection } from "./SortDirection";
 
 export interface Results {
+    data: CastMember[];
+    links: Links;
     meta: Meta;
-    data: Category[];    
 }
 
 export interface Result {
     meta: Meta;
-    data: Category;
+    data: CastMember;
 }
 
-export interface Category {
-    id:          string;
-    name:        string;
-    description: null;
-    is_active:    boolean;
-    created_at:   Date;
+export interface CastMember {
+    id: string;
+    name: string;
+    type: number;
+    deleted_at: null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Links {
+    prev: null;
+    last: string;
+    next: string;
+    first: string;
 }
 
 export interface Meta {
@@ -27,11 +36,10 @@ export interface Meta {
     total?: number;
 }
 
-export interface CategoryParams {
+export interface CastMembersParams {
     page?: number;
     per_page?: number;
     sort?: string;
     sort_dir?: SortDirection;
     filter?: string;
 }
-
