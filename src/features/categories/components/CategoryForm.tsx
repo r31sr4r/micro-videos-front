@@ -7,27 +7,27 @@ import {
 	TextField,
 	Switch,
 	FormControlLabel,
-	FormGroup,    
+	FormGroup,
 } from '@mui/material';
 import { Category } from '../categorySlice';
 import { Link } from 'react-router-dom';
 
 type Props = {
-    category: Category;
-    isdisabled?: boolean;
-    isLoading?: boolean;
-    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleToogle: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+	category: Category;
+	isDisabled?: boolean;
+	isLoading?: boolean;
+	handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+	handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	handleToggle: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 export function CategoryForm({
-    category,
-    isdisabled,
-    isLoading,
-    handleSubmit: onSubmit,
-    handleChange,
-    handleToogle,
+	category,
+	isDisabled,
+	isLoading,
+	handleSubmit: onSubmit,
+	handleChange,
+	handleToggle,
 }: Props) {
 	return (
 		<Box p={2}>
@@ -40,18 +40,18 @@ export function CategoryForm({
 								name="name"
 								label="Name"
 								value={category.name}
-								disabled={isdisabled}
+								disabled={isDisabled}
 								onChange={handleChange}
 							/>
 						</FormControl>
 					</Grid>
 					<Grid item xs={12}>
 						<FormControl fullWidth>
-							<TextField								
+							<TextField
 								name="description"
 								label="Description"
 								value={category.description}
-								disabled={isdisabled}
+								disabled={isDisabled}
 								onChange={handleChange}
 							/>
 						</FormControl>
@@ -64,7 +64,7 @@ export function CategoryForm({
 									<Switch
 										name="is_active"
 										color="secondary"
-										onChange={handleToogle}
+										onChange={handleToggle}
 										checked={category.is_active}
 										inputProps={{
 											'aria-label': 'controlled',
@@ -90,9 +90,9 @@ export function CategoryForm({
 								type="submit"
 								variant="contained"
 								color="secondary"
-								disabled={isdisabled}
+								disabled={isDisabled || isLoading}
 							>
-								Save
+								{isLoading ? 'Loading...' : 'Save'}
 							</Button>
 						</Box>
 					</Grid>

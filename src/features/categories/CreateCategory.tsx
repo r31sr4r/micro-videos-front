@@ -35,7 +35,7 @@ export const CategoryCreate = () => {
 		setCategoryState({ ...categoryState, [name]: value });
 	};
 
-	const handleToogle = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, checked } = e.target;
 		setCategoryState({ ...categoryState, [name]: checked });
 	};
@@ -61,11 +61,11 @@ export const CategoryCreate = () => {
 				</Box>
 			<CategoryForm
 				category={categoryState}
-				isdisabled={status.isLoading || isdisabled}
+				isDisabled={status.isLoading || isdisabled}
 				isLoading={false}
 				handleSubmit={handleSubmit}
 				handleChange={handleChange}
-				handleToogle={handleToogle}
+				handleToggle={handleToggle}
 			/>
 			</Paper>
 		</Box>

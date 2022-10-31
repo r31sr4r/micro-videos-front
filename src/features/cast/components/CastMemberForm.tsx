@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 
 type Props = {
 	castMember: CastMember;
-	isdisabled?: boolean;
+	isDisabled?: boolean;
 	isLoading?: boolean;
 	handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 	handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -25,7 +25,7 @@ type Props = {
 
 export function CastMemberForm({
 	castMember,
-	isdisabled,
+	isDisabled,
 	isLoading,
 	handleSubmit: onSubmit,
 	handleChange,
@@ -41,7 +41,7 @@ export function CastMemberForm({
 								name="name"
 								label="Name"
 								value={castMember.name}
-								disabled={isdisabled}
+								disabled={isDisabled}
 								onChange={handleChange}
 							/>
 						</FormControl>
@@ -85,9 +85,9 @@ export function CastMemberForm({
 								type="submit"
 								variant="contained"
 								color="secondary"
-								disabled={isdisabled}
+								disabled={isDisabled || isLoading}
 							>
-								Save
+								{ isLoading ? "Loading.." : "Save" }
 							</Button>
 						</Box>
 					</Grid>

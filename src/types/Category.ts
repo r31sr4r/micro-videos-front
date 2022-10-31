@@ -13,7 +13,7 @@ export interface Result {
 export interface Category {
     id:          string;
     name:        string;
-    description: null;
+    description?: string | null;
     is_active:    boolean;
     created_at:   Date;
 }

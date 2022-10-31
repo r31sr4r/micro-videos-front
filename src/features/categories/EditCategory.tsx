@@ -31,7 +31,7 @@ export const CategoryEdit = () => {
 		setCategoryState({ ...categoryState, [name]: value });
 	};
 
-	const handleToogle = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, checked } = e.target;
 		setCategoryState({ ...categoryState, [name]: checked });
 	};
@@ -62,11 +62,11 @@ export const CategoryEdit = () => {
 
 				<CategoryForm
 					category={categoryState}
-					isdisabled={status.isLoading}
+					isDisabled={status.isLoading}
 					isLoading={false}
 					handleSubmit={handleSubmit}
 					handleChange={handleChange}
-					handleToogle={handleToogle}
+					handleToggle={handleToggle}
 				/>
 			</Paper>
 		</Box>

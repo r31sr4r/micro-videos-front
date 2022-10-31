@@ -21,10 +21,10 @@ export interface CastMember {
 }
 
 export interface Links {
-    prev: null;
-    last: string;
-    next: string;
-    first: string;
+    prev?: string | null;
+    last?: string | null;
+    next?: string | null;
+    first?: string | null;
 }
 
 export interface Meta {

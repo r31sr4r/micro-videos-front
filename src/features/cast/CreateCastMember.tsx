@@ -46,7 +46,7 @@ export const CreateCastMember = () => {
 				</Box>
 			<CastMemberForm
 				castMember={castMemberState}
-				isdisabled={status.isLoading}
+				isDisabled={status.isLoading}
 				isLoading={status.isLoading}
 				handleSubmit={handleSubmit}
 				handleChange={handleChange}
