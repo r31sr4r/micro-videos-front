@@ -12,13 +12,19 @@ import { categoryResponse, categoryResponsePage2 } from './mocks';
 
 export const handlers = [
 	rest.get(`${baseUrl}/categories`, (req, res, ctx) => {
-		console.log(res);
+		console.log(req.url.searchParams.get('page'));
 		if (req.url.searchParams.get('page') === '2') {
 			return res(ctx.json(categoryResponsePage2), ctx.delay(150));
 		}
-
 		return res(ctx.json(categoryResponse), ctx.delay(150));
 	}),
+
+	rest.delete(
+		`${baseUrl}/categories/887b0585-3848-4da0-8d1b-912ae612eb4b`,
+		(_, res, ctx) => {
+			return res(ctx.delay(150), ctx.status(204));
+		}
+	),
 ];
 
 const server = setupServer(...handlers);
@@ -73,6 +79,38 @@ describe('ListCategory', () => {
 		await waitFor(() => {
 			const page = screen.getByText('Anime');
 			expect(page).toBeInTheDocument();
+		});
+	});
+
+	it('should handle filter change', async () => {
+		renderWithProviders(<CategoryList />);
+		await waitFor(() => {
+			const page = screen.getByText('Action');
+			expect(page).toBeInTheDocument();
+		});
+
+		const input = screen.getByPlaceholderText('Search…');
+		fireEvent.change(input, { target: { value: 'Drama' } });
+
+		await waitFor(() => {
+			const loading = screen.getByRole('progressbar');
+			expect(loading).toBeInTheDocument();
+		});
+	});
+
+	it('should handle Delete Category success', async () => {
+		renderWithProviders(<CategoryList />);
+		await waitFor(() => {
+			const page = screen.getByText('Action');
+			expect(page).toBeInTheDocument();
+		});
+
+		const deleteButton = screen.getByTestId('delete-button');
+		fireEvent.click(deleteButton);
+
+		await waitFor(() => {
+			const text = screen.getByText('Category deleted successfully');
+			expect(text).toBeInTheDocument();
 		});
 	});
 });
