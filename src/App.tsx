@@ -7,7 +7,7 @@ import { Routes, Route } from 'react-router-dom';
 import { CategoryList } from './features/categories/ListCategory';
 import { CategoryCreate } from './features/categories/CreateCategory';
 import { CategoryEdit } from './features/categories/EditCategory';
-import { Typography } from '@mui/material';
+import { Typography, CssBaseline } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { ListCastMembers } from './features/cast/ListCastMembers';
 import { CreateCastMember } from './features/cast/CreateCastMember';
@@ -16,6 +16,7 @@ import { EditCastMember } from './features/cast/EditCastMember';
 function App() {
 	return (
 		<ThemeProvider theme={appTheme}>
+			<CssBaseline />
 			<SnackbarProvider
 				autoHideDuration={3000}
 				maxSnack={3}
