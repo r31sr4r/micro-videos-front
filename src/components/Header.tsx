@@ -14,9 +14,11 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 export function Header({
 	toggle,
 	theme,
+	handleDwawerToggle,
 }: {
 	toggle: () => void;
 	theme: string;
+  handleDwawerToggle: () => void;
 }) {
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -27,6 +29,7 @@ export function Header({
 						edge="start"
 						color="inherit"
 						aria-label="menu"
+						onClick={handleDwawerToggle}
 						sx={{ mr: 2 }}
 					>
 						<MenuIcon />
