@@ -7,7 +7,8 @@ import {
 	GridColDef,
 	GridRowsProp,
 	GridToolbar,
-	GridFilterModel
+	GridFilterModel,
+	GridRenderCellParams
 } from '@mui/x-data-grid';
 
 type Props = {
@@ -103,7 +104,7 @@ export function CategoriesTable({
 		);
 	}
 
-	function renderActionsCell(params: any) {
+	function renderActionsCell(params: GridRenderCellParams) {
 		return (
 			<IconButton
 				color="secondary"

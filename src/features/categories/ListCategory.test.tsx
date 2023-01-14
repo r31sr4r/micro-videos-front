@@ -10,9 +10,9 @@ import { baseUrl } from '../api/apiSlice';
 import { CategoryList } from './ListCategory';
 import { categoryResponse, categoryResponsePage2 } from './mocks';
 
+
 export const handlers = [
 	rest.get(`${baseUrl}/categories`, (req, res, ctx) => {
-		console.log(req.url.searchParams.get('page'));
 		if (req.url.searchParams.get('page') === '2') {
 			return res(ctx.json(categoryResponsePage2), ctx.delay(150));
 		}
@@ -101,11 +101,11 @@ describe('ListCategory', () => {
 	it('should handle Delete Category success', async () => {
 		renderWithProviders(<CategoryList />);
 		await waitFor(() => {
-			const page = screen.getByText('Action');
-			expect(page).toBeInTheDocument();
+			const name = screen.getByText('Action');
+			expect(name).toBeInTheDocument();
 		});
 
-		const deleteButton = screen.getByTestId('delete-button');
+		const deleteButton = screen.getAllByTestId('delete-button')[0];
 		fireEvent.click(deleteButton);
 
 		await waitFor(() => {
